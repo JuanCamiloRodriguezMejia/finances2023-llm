@@ -49,14 +49,19 @@ def run_openai(
             *messages,
         ]
 
+        # Newer OpenAI models (gpt-5.x, o-series) require max_completion_tokens;
+        # older models accept both. max_completion_tokens is the current standard.
+        # temperature, top_p, and other sampling params are omitted when None —
+        # reasoning models reject them or only accept the default value.
         kwargs: dict[str, Any] = {
             "model": cfg.model,
-            "max_tokens": cfg.max_tokens,
-            "temperature": cfg.temperature,
-            "top_p": cfg.top_p,
+            "max_completion_tokens": cfg.max_tokens,
             "messages": all_messages,
         }
-        # Pass optional params only when explicitly set (avoid sending null values)
+        if cfg.temperature is not None:
+            kwargs["temperature"] = cfg.temperature
+        if cfg.top_p is not None:
+            kwargs["top_p"] = cfg.top_p
         if cfg.frequency_penalty is not None:
             kwargs["frequency_penalty"] = cfg.frequency_penalty
         if cfg.presence_penalty is not None:

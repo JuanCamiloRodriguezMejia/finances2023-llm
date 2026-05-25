@@ -10,10 +10,12 @@ anthropic:
   # top_k: 40              # uncomment to use
 
 openai:
-  model: gpt-4o             # swap freely, e.g. gpt-4o, gpt-4.5
+  model: gpt-5.5             # swap freely, e.g. gpt-4o, gpt-4.5, o4-mini
   max_tokens: 512
-  temperature: 0.0
-  top_p: 1.0
+  # temperature and top_p are null by default — newer models (o-series, gpt-5.x)
+  # do not support them. Uncomment and set only when using gpt-4o or older:
+  # temperature: 0.0
+  # top_p: 1.0
   # frequency_penalty: 0.0
   # presence_penalty: 0.0
 

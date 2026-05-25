@@ -28,8 +28,11 @@ class AnthropicConfig(BaseModel):
 class OpenAIConfig(BaseModel):
     model: str
     max_tokens: int = 512
-    temperature: float = 0.0
-    top_p: float = 1.0
+    # temperature and top_p are Optional so they can be omitted for models
+    # that do not support them (o-series, gpt-5.x). Set to null in config.yaml
+    # to leave them out of the API call entirely.
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
     frequency_penalty: Optional[float] = None
     presence_penalty: Optional[float] = None
 
