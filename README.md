@@ -124,9 +124,18 @@ python run_inference.py --provider openai
 # Only Subtask 2, capped at 200 rows
 python run_inference.py --subtasks 2 --max-rows 200
 
+# Skip the first 2449 rows (i.e. skip the train split) and run the rest
+python run_inference.py --offset 2449
+
+# Run only rows 2449–3061 (eval split: 613 rows)
+python run_inference.py --offset 2449 --max-rows 613
+
 # Verbose logging
 python run_inference.py --log-level DEBUG
 ```
+
+> **`--offset` + `--max-rows` together** — offset is applied first, then the row cap.  
+> So `--offset 100 --max-rows 50` processes rows 100–149 (0-indexed).
 
 ### All CLI flags
 
@@ -134,7 +143,8 @@ python run_inference.py --log-level DEBUG
 |------|---------|-------------|
 | `--config PATH` | `config.yaml` | Path to configuration file |
 | `--provider {anthropic,openai}` | from config | Override the provider |
-| `--max-rows N` | from config (`null` = all) | Cap dataset rows |
+| `--offset N` | `0` | Skip the first N rows before processing |
+| `--max-rows N` | from config (`null` = all) | Cap rows after the offset |
 | `--subtasks {1,2} …` | from config (`[1,2]`) | Which subtasks to run |
 | `--estimate-cost` | off | Dry-run: print estimate, no API calls |
 | `--log-level` | `INFO` | `DEBUG` / `INFO` / `WARNING` / `ERROR` |

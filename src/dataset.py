@@ -41,10 +41,19 @@ def iter_rows(
     pipeline_cfg: "PipelineConfig",
 ) -> Iterator[dict]:
     """
-    Yield each row as a plain dict, respecting max_rows from pipeline config.
+    Yield each row as a plain dict, respecting offset and max_rows from pipeline config.
+
+    Slicing order:
+      1. Skip the first `offset` rows  (df.iloc[offset:])
+      2. Take at most `max_rows` rows   (df.head(max_rows))
+
+    Example: offset=100, max_rows=50  →  rows 100–149 (0-indexed).
     All values are strings (NaN → empty string) for safe Jinja2 rendering.
     """
     df = load_df(dataset_cfg)
+
+    if pipeline_cfg.offset:
+        df = df.iloc[pipeline_cfg.offset:]
 
     if pipeline_cfg.max_rows is not None:
         df = df.head(pipeline_cfg.max_rows)

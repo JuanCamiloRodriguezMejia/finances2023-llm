@@ -37,7 +37,8 @@ dataset:
 pipeline:
   subtasks: [1, 2]              # which subtasks to run
   batch_size: 1                 # rows processed concurrently (keep 1 for rate-limit safety)
-  max_rows: null                # null = whole dataset; set an int to cap for quick tests
+  offset: 0                     # skip the first N rows (0 = start from the beginning)
+  max_rows: null                # null = whole dataset after offset; set an int to cap
   retry_attempts: 3
   retry_backoff_seconds: 5
   skip_on_error: true           # if false, a single failure aborts the run

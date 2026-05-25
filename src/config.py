@@ -54,6 +54,7 @@ class DatasetConfig(BaseModel):
 class PipelineConfig(BaseModel):
     subtasks: list[int] = [1, 2]
     batch_size: int = 1
+    offset: int = 0                   # skip the first N rows before applying max_rows
     max_rows: Optional[int] = None
     retry_attempts: int = 3
     retry_backoff_seconds: float = 5.0

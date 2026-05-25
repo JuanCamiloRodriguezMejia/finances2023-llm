@@ -8,6 +8,8 @@ python run_inference.py                          # use config.yaml defaults
 python run_inference.py --config config.yaml     # explicit config path
 python run_inference.py --provider openai        # override provider
 python run_inference.py --max-rows 50            # quick smoke test
+python run_inference.py --offset 100             # skip first 100 rows
+python run_inference.py --offset 100 --max-rows 50   # rows 100-149
 python run_inference.py --subtasks 1             # run only Subtask 1
 python run_inference.py --estimate-cost          # dry-run: show token estimate
 python run_inference.py --log-level DEBUG        # verbose output
@@ -45,11 +47,18 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Override the provider set in config.yaml",
     )
     parser.add_argument(
+        "--offset",
+        type=int,
+        default=None,
+        metavar="N",
+        help="Skip the first N rows before processing (0-indexed)",
+    )
+    parser.add_argument(
         "--max-rows",
         type=int,
         default=None,
         metavar="N",
-        help="Cap the number of dataset rows (handy for smoke tests)",
+        help="Maximum number of rows to process after the offset",
     )
     parser.add_argument(
         "--subtasks",
@@ -86,6 +95,8 @@ def _apply_overrides(cfg, args: argparse.Namespace) -> None:
     """Mutate cfg in-place with any CLI flags the user provided."""
     if args.provider:
         cfg.provider = args.provider
+    if args.offset is not None:
+        cfg.pipeline.offset = args.offset
     if args.max_rows is not None:
         cfg.pipeline.max_rows = args.max_rows
     if args.subtasks:
@@ -107,6 +118,7 @@ def _print_cost_estimate(cfg) -> None:
     print(f"  Config          : {args_global.config}")
     print(f"  Provider        : {cfg.provider}")
     print(f"  Model           : {model}")
+    print(f"  Offset          : {cfg.pipeline.offset}")
     print(f"  Dataset rows    : {len(rows)}")
     print(f"  Subtasks        : {cfg.pipeline.subtasks}")
     print(f"  Total API calls : {n_calls:,}")
@@ -148,10 +160,11 @@ def main() -> None:
 
     # ── Live inference ────────────────────────────────────────────────────────
     logger.info(
-        "Starting  provider=%-10s  model=%s  subtasks=%s  max_rows=%s",
+        "Starting  provider=%-10s  model=%s  subtasks=%s  offset=%d  max_rows=%s",
         cfg.provider,
         cfg.get_active_llm_cfg().model,
         cfg.pipeline.subtasks,
+        cfg.pipeline.offset,
         cfg.pipeline.max_rows if cfg.pipeline.max_rows is not None else "all",
     )
 
