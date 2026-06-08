@@ -3,14 +3,14 @@ provider: anthropic          # "anthropic" | "openai"
 
 # ── Model identifiers ────────────────────────────────────────────────────────
 anthropic:
-  model: claude-sonnet-4-20250514
+  model: claude-sonnet-4-6
   max_tokens: 512
   temperature: 0.0
-  top_p: 1.0
+  # top_p: 1.0             # cannot be used together with temperature on newer models
   # top_k: 40              # uncomment to use
 
 openai:
-  model: gpt-5.5             # swap freely, e.g. gpt-4o, gpt-4.5, o4-mini
+  model: gpt-5.4             # swap freely, e.g. gpt-4o, gpt-4.5, o4-mini
   max_tokens: 512
   # temperature and top_p are null by default — newer models (o-series, gpt-5.x)
   # do not support them. Uncomment and set only when using gpt-4o or older:

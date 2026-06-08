@@ -46,11 +46,13 @@ def run_anthropic(
         kwargs: dict[str, Any] = {
             "model": cfg.model,
             "max_tokens": cfg.max_tokens,
-            "temperature": cfg.temperature,
-            "top_p": cfg.top_p,
             "system": system,
             "messages": messages,
         }
+        if cfg.temperature is not None:
+            kwargs["temperature"] = cfg.temperature
+        if cfg.top_p is not None:
+            kwargs["top_p"] = cfg.top_p
         if cfg.top_k is not None:
             kwargs["top_k"] = cfg.top_k
 

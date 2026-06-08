@@ -17,20 +17,20 @@ from pydantic import BaseModel, ConfigDict, field_validator, model_validator
 
 # ── Sub-models ────────────────────────────────────────────────────────────────
 
+# temperature and top_p are Optional so they can be omitted for models
+# that do not support them (gpt-5.x, sonnet-4.x). Set to null in config.yaml
+# to leave them out of the API call entirely.
 class AnthropicConfig(BaseModel):
     model: str
     max_tokens: int = 512
-    temperature: float = 0.0
-    top_p: float = 1.0
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
     top_k: Optional[int] = None
 
 
 class OpenAIConfig(BaseModel):
     model: str
     max_tokens: int = 512
-    # temperature and top_p are Optional so they can be omitted for models
-    # that do not support them (o-series, gpt-5.x). Set to null in config.yaml
-    # to leave them out of the API call entirely.
     temperature: Optional[float] = None
     top_p: Optional[float] = None
     frequency_penalty: Optional[float] = None
