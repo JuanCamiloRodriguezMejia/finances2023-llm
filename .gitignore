@@ -43,6 +43,7 @@ checkpoints/
 *.pkl
 *.pickle
 loaded_data.xlsx
+prices_100_entries.xlsx
 
 # Generated / processed Excel files (keep the original loaded_data.xlsx if needed)
 *_processed.xlsx
